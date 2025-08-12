@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Link In Bio — Simple Landing Page</title>
+  <meta name="description" content="Simple landing page for Instagram bio with 10 custom links" />
+  <style>
+    :root{
+      --bg1:#0f172a; /* midnight */
+      --bg2:#0ea5a6; /* teal */
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --accent:#06b6d4;
+      --btn-radius:12px;
+      --max-width:520px;
+      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,var(--bg1),#071027 65%);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      -webkit-font-smoothing:antialiased;
+    }
+    .card{
+      width:100%;
+      max-width:var(--max-width);
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius:18px;
+      padding:28px;
+      text-align:center;
+      box-shadow:0 8px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .avatar{
+      width:96px;height:96px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--bg2),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:#052024;
+    }
+    h1{margin:6px 0 4px;font-size:20px}
+    p.bio{margin:0 0 18px;color:var(--muted);font-size:14px}
+    .links{display:grid;gap:12px;grid-template-columns:1fr}
+    a.link{
+      display:inline-block;padding:12px 14px;border-radius:var(--btn-radius);text-decoration:none;color:#061018;font-weight:600;background:linear-gradient(90deg,var(--accent),#7dd3fc);box-shadow:0 4px 18px rgba(6,182,212,0.18);
+    }
+    a.small{font-size:14px;padding:10px}
+    .hint{margin-top:14px;color:var(--muted);font-size:12px}
+    @media (max-width:420px){.card{padding:20px}.avatar{width:84px;height:84px}}
+    .panel{margin-top:16px;text-align:left;background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;color:var(--muted);font-size:13px}
+    .panel label{display:block;margin-bottom:6px}
+    .panel input{width:100%;padding:8px;margin-bottom:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff}
+    .panel button{padding:8px 10px;border-radius:10px;border:0;background:var(--accent);color:#052024;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="card" id="page">
+    <div class="avatar" id="avatar">AB</div>
+    <h1 id="name">Nama Anda</h1>
+    <p class="bio" id="bio">Deskripsi singkat — mis. pembuat konten • link penting ada di bawah</p>
+
+    <div class="links" id="links"></div>
+
+    <div class="hint">Tip: salin URL halaman ini ke bio Instagram Anda — gunakan tombol di bawah untuk mengedit tautan.</div>
+
+    <div class="panel" id="editor">
+      <strong>Edit Link (contoh cepat)</strong>
+      <label for="labelInput">Teks tombol</label>
+      <input id="labelInput" placeholder="Judul link (contoh: Website Saya)" />
+      <label for="urlInput">URL</label>
+      <input id="urlInput" placeholder="https://" />
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button id="addBtn">Tambah / Update</button>
+        <button id="exportBtn" type="button">Export HTML</button>
+      </div>
+      <p style="margin-top:8px;color:var(--muted);font-size:12px">Anda bisa mengedit links langsung di variabel <code>links</code> pada file index.html juga.</p>
+    </div>
+  </div>
+
+  <script>
+    const links = [
+      { title: 'Website Utama', url: 'https://contoh.com' },
+      { title: 'Toko', url: 'https://toko.com' },
+      { title: 'YouTube', url: 'https://youtube.com' },
+      { title: 'Artikel Terbaru', url: 'https://contoh.com/blog' },
+      { title: 'Kontak', url: 'mailto:email@contoh.com' },
+      { title: 'Portofolio', url: 'https://portfolio.com' },
+      { title: 'Event', url: 'https://event.com' },
+      { title: 'Playlist', url: 'https://music.com' },
+      { title: 'Voucher', url: 'https://contoh.com/voucher' },
+      { title: 'Lainnya', url: 'https://contoh.com/more' }
+    ];
+
+    const name = 'Nama Anda';
+    const bio = 'Deskripsi singkat Anda — bisa diubah di file HTML';
+    const avatarText = (name.split(' ').map(s=>s[0]||'').slice(0,2).join('')).toUpperCase();
+
+    document.getElementById('name').textContent = name;
+    document.getElementById('bio').textContent = bio;
+    document.getElementById('avatar').textContent = avatarText;
+
+    const linksContainer = document.getElementById('links');
+    function renderLinks(){
+      linksContainer.innerHTML = '';
+      links.slice(0,10).forEach((l,i)=>{
+        const a = document.createElement('a');
+        a.className = 'link small';
+        a.href = l.url || '#';
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = l.title || ('Link ' + (i+1));
+        linksContainer.appendChild(a);
+      });
+    }
+    renderLinks();
+
+    const labelInput = document.getElementById('labelInput');
+    const urlInput = document.getElementById('urlInput');
+    const addBtn = document.getElementById('addBtn');
+    const exportBtn = document.getElementById('exportBtn');
+
+    addBtn.addEventListener('click', ()=>{
+      const t = labelInput.value.trim();
+      const u = urlInput.value.trim();
+      if(!t || !u) return alert('Masukkan teks dan URL');
+      let replaced=false;
+      for(let i=0;i<10;i++){
+        if(!links[i] || !links[i].title){ links[i] = {title:t,url:u}; replaced=true; break; }
+      }
+      if(!replaced){ links[links.length-1] = {title:t,url:u}; }
+      renderLinks();
+      labelInput.value=''; urlInput.value='';
+    });
+
+    exportBtn.addEventListener('click', ()=>{
+      const cloned = document.documentElement.outerHTML;
+      const blob = new Blob([cloned], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'index.html';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
